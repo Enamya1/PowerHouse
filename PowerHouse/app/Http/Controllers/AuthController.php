@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
@@ -22,13 +23,13 @@ class AuthController extends Controller
         $user = User::create([
             'name'=>$validate['name'],
             'email'=>$validate['email'],
-            'ID_nO'=>$validate['ID_nO'],
+            'ID_nO'=>Hash::make($validate['ID_nO']),
             'password'=> Hash::make($validate['password']),
         ]);
         // return the respond 
         return response()->json([
             'message'=>'👍',
-            'user'=>$user
+            'user'=>$user,
         ],201);
 
 
@@ -50,13 +51,19 @@ class AuthController extends Controller
                 
             ],401);
         }
+        if (!$user){
+            return response()->json([
+                'message'=>'user do not existe'
+            ]);
+        };
         //  generate the token 
         $token= $user->createToken("web_app")->plainTextToken;
         // retunr the finale resulte 
         return response()->json([
             'message'=>'👍',
             'user'=>$user,
-            'Token'=>$token
+            'Token'=>$token,
+            'role'=>$user->role_name
         ],200);
     }
 
