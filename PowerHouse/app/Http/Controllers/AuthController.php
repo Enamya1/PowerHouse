@@ -65,6 +65,51 @@ class AuthController extends Controller
             'Token'=>$token,
             'role'=>$user->role_name
         ],200);
+        
+    }
+    public function log_out(Request $request){
+        $request->user()->currentAccessToken()->delete();
+        return response()->json([
+            'message'=>'Logged out successfully ✅'
+        ],200);
+    }
+    public function get_profile_info(Request $request){
+        $user = $request->user();
+        return response()->json([
+            'user'=>$user
+        ],200);
+    }
+    public function change_password(Request $request){
+        $user =$request->user();
+        $validation = $request->validate([
+            "new_password"=>'required|string|min:8|confirmed'
+        ]);
+        $user->update([
+            'password'=>$validation[
+                'new_password'
+            ]
+            ]);
+
+        //  add a if contion if the new_password == to the old password (TODO)
+// 2 step varification (TODO)
+        return response()->json([
+            'message'=>'password updated successfully'
+        ],200);
+        
+
+    }
+    public function delete_acount($confirmation){
+        if ($confirmation!=='delete'){
+            return response()->json([
+                'message'=>'wrong input ❌'
+            ],400);
+        };
+        $user=request()->user();
+        $user->delete();
+        return response()->json([
+            'message'=>'acount has been deleted 👍'
+        ],200);
+
     }
 
 

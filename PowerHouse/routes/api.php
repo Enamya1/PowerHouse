@@ -22,8 +22,8 @@ Route::get('/test_v2', function (Request $request) {
 });
 
 
-Route::get('/users',[UserController::class,'index']);
-Route::POST('/user',[UserController::class,'store']);
+// Route::get('/users',[UserController::class,'index']);
+// Route::POST('/user',[UserController::class,'store']);
 
 
 
@@ -32,6 +32,12 @@ Route::post('/sing_up',[AuthController::class,'sing_up']);
 Route::post('/login',[AuthController::class,'login']);
 
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'log_out']);
+    Route::get('/profile',[AuthController::class,'get_profile_info']);
+    Route::put('/change_password',[AuthController::class,'change_password']);
+    Route::DELETE('/delete/{confirmation}',[AuthController::class,'delete_acount']);
+});
 
 
 Route::middleware(['auth:sanctum', 'admin'])
@@ -45,5 +51,7 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::get('/users/{id}', [AdminController::class, 'get_user_by_id']);
         // delet one user by id 
         Route::delete('/delete/{id}', [AdminController::class, 'delete_user_by_id']);
+        Route::patch('/change_role', [AdminController::class, 'update_user_role']);
+        Route::patch('/update/{id}', [AdminController::class, 'updaet_user_info']);
 
     });

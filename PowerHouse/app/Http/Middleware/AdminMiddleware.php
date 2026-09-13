@@ -27,9 +27,9 @@ class AdminMiddleware
         };
 
         // check if the user is a admin ( by the reole id 1 admin 2 user 3 modirator)
-        if ($auth->role_id != 1 ){
+        if ($auth->role_id !== 1 ){
             return response()->json([
-                'message'=>'mother fucker back off you not a admin '
+                'message'=>'mother fucker back off you are not a admin !!!'
             ],403);
         };
 
