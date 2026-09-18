@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email','ID_nO','password'])]
+#[Fillable(['name', 'email','ID_nO','password', 'is_active'])]
 #[Hidden(['password', 'remember_token','ID_nO'])]
 class User extends Authenticatable
 {
@@ -40,6 +40,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'ID_nO' => 'hashed',
+            'is_active' => 'boolean',
         ];
     }
 }

@@ -53,5 +53,10 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::delete('/delete/{id}', [AdminController::class, 'delete_user_by_id']);
         Route::patch('/change_role', [AdminController::class, 'update_user_role']);
         Route::patch('/update/{id}', [AdminController::class, 'updaet_user_info']);
+        Route::patch('/change_status/{id}', [AdminController::class, 'update_user_status']);
+        Route::get('/roles', [AdminController::class, 'list_all_roles']);
+        Route::get('/roles/{id}', [AdminController::class, 'get_role_info_by_id']);
+        Route::post('/make/role', [AdminController::class, 'create_role']);
+        Route::delete('/delete/role/{id}', [AdminController::class, 'delete_role_by_id']);
 
     });

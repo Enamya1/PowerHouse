@@ -33,6 +33,13 @@ class AdminMiddleware
             ],403);
         };
 
+
+        if (!$auth->is_active){
+            return response()->json([
+                'message'=>'your account is not active yet ❌'
+            ],403);
+        }
+
         
         return $next($request);
     }

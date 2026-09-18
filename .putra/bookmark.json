@@ -1,36 +1,9 @@
 {
-  "bookmarks": [
-    {
-      "title": "//  add a if contion if the new_password == to the",
-      "description": "",
-      "filePath": "PowerHouse/app/Http/Controllers/AuthController.php",
-      "line": 92,
-      "column": 77,
-      "tags": [
-        "TODO"
-      ],
-      "id": "a0f21121502a2f3cf46d8c34c556dd00",
-      "createdAt": "2026-09-13T17:19:41.116Z",
-      "updatedAt": "2026-09-13T17:19:41.116Z"
-    },
-    {
-      "title": "// 2 step varification (TODO)",
-      "description": "",
-      "filePath": "PowerHouse/app/Http/Controllers/AuthController.php",
-      "line": 93,
-      "column": 28,
-      "tags": [
-        "TODO"
-      ],
-      "id": "9378543cc3a3f696a38020072cb3b84c",
-      "createdAt": "2026-09-13T17:26:35.950Z",
-      "updatedAt": "2026-09-13T17:26:35.950Z"
-    }
-  ],
+  "bookmarks": [],
   "metadata": {
     "version": "1.0.0",
     "workspacePath": "",
-    "totalBookmarks": 2,
-    "lastModified": "2026-09-13T17:26:35.950Z"
+    "totalBookmarks": 0,
+    "lastModified": "2026-09-17T15:03:32.380Z"
   }
 }

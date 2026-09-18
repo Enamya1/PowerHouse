@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -133,6 +134,65 @@ class AdminController extends Controller
         ],200);
         
         
+    }
+    public function update_user_status($id){
+        $user= User::find($id);
+        if (!$user){
+            return response()->json([
+                'message'=>'user not found 🙈'
+            ],404);
+        };
+        $user->is_active = !$user->is_active;
+        $user->save();
+        return response()->json([
+            'message'=>'succeed 👌',
+            'user'=>$user
+        ],200);
+    }
+
+    public function list_all_roles(){
+        $roles = Role::all(['*']);
+        return response()->json([
+            $roles
+        ],200);
+    }
+
+
+    public function get_role_info_by_id($id){
+        $role = Role::find($id);
+        if (!$role){
+            return response()->json([
+                'message'=>'role not found 🙈'
+            ],404);
+        };
+        return response()->json([
+            $role
+        ],200);
+    }
+
+
+    public function create_role(Request $request){
+        $validation = $request->validate([
+            'role_name'=>'required|string|max:255',
+        ]);
+        $role = Role::create($validation);
+        return response()->json([
+            'message'=>'succeed 👌',
+            'role'=>$role
+        ],200);
+    }
+
+    public function delete_role_by_id($id){
+        $role = Role::find($id);
+        if (!$role){
+            return response()->json([
+                'message'=>'role not found 🙈'
+            ],404);
+        };
+        $role->delete();
+        return response()->json([
+            'message'=>'role has been deleted 👌'
+        ],200);
     }
 
 

@@ -17,8 +17,9 @@ return new class extends Migration
             $table->string('email')->unique()->index();
             $table->string('ID_nO')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->foreignId("role_id")->cascadeOnDelete()->constrained('roles')->default(2);
+            $table->foreignId("role_id")->default(2)->cascadeOnDelete()->constrained('roles');
             $table->string('password');
+            $table->boolean('is_active')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

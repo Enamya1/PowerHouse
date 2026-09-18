@@ -51,11 +51,11 @@ class AuthController extends Controller
                 
             ],401);
         }
-        if (!$user){
+        if (!$user->is_active){
             return response()->json([
-                'message'=>'user do not existe'
-            ]);
-        };
+                'message'=>'your account is not active yet ❌'
+            ],403);
+        }
         //  generate the token 
         $token= $user->createToken("web_app")->plainTextToken;
         // retunr the finale resulte 
@@ -89,10 +89,13 @@ class AuthController extends Controller
                 'new_password'
             ]
             ]);
+            if (Hash::check($validation['new_password'],$user->password)){
+                return response()->json([
+                    'message'=>'new password is the same as old password ❌'
+                ],400);
+            }
 
-        //  add a if contion if the new_password == to the old password (TODO)
-// 2 step varification (TODO)
-        return response()->json([
+            return response()->json([
             'message'=>'password updated successfully'
         ],200);
         

@@ -26,11 +26,19 @@ class UserMiddleware
         };
 
     
-        if ($auth->role_id != 1 ){
+        if ($auth->role_id !== 2 ){
             return response()->json([
-                'message'=>'mother fucker back off you are not a admin !!!'
+                'message'=>'mother fucker back off you are not a user !!!'
             ],403);
         };
+
+
+
+        if (!$auth->is_active){
+            return response()->json([
+                'message'=>'your account is not active yet ❌'
+            ],403);
+        }
 
         
         return $next($request);
