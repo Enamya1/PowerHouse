@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Membership;
+use App\Models\MembershipType;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Hash;
@@ -80,26 +82,21 @@ class AuthController extends Controller
         ],200);
     }
     public function change_password(Request $request){
-        $user =$request->user();
+        $user = $request->user();
         $validation = $request->validate([
             "new_password"=>'required|string|min:8|confirmed'
         ]);
-        $user->update([
-            'password'=>$validation[
-                'new_password'
-            ]
-            ]);
-            if (Hash::check($validation['new_password'],$user->password)){
-                return response()->json([
-                    'message'=>'new password is the same as old password ❌'
-                ],400);
-            }
-
+        if (Hash::check($validation['new_password'], $user->password)) {
             return response()->json([
+                'message'=>'new password is the same as old password ❌'
+            ],400);
+        }
+        $user->update([
+            'password' => $validation['new_password']
+        ]);
+        return response()->json([
             'message'=>'password updated successfully'
         ],200);
-        
-
     }
     public function delete_acount($confirmation){
         if ($confirmation!=='delete'){
@@ -113,6 +110,39 @@ class AuthController extends Controller
             'message'=>'acount has been deleted 👍'
         ],200);
 
+    }
+    public function sing_up_for_membership(Request $request){
+        $user = $request->user();
+        $validation = $request->validate([
+            'membership_type_id'=>'required|integer|exists:membership_type,id',
+        ]);
+        $membership_type = MembershipType::find($validation['membership_type_id']);
+        $existingMembership = $user->memberships()->where('membership_type_id', $validation['membership_type_id'])->first();
+        if ($existingMembership) {
+            return response()->json([
+                'message'=>'you already have a membership of this type ❌'
+            ],400);
+        }
+        if (!$membership_type){
+            return response()->json([
+                'message'=>'membership type not found ❌'
+            ],404);
+        }
+        $startDate = now();
+        $endDate = now()->addDays($membership_type->duration_days);
+        $paymentStatus = $membership_type->price == 0 ? 'paid' : 'pending';
+        $membership = $user->memberships()->create([
+            'membership_type_id' => $validation['membership_type_id'],
+            'start_date'         => $startDate,
+            'end_date'           => $endDate,
+            'status'             => 'active',
+            'payment_status'     => $paymentStatus,
+        ]);
+        return response()->json([
+                'message'=>'succeed 👌',
+                'user'=>$user,
+                'membership'=>$membership
+            ],200);
     }
 
 

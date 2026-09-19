@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('membership_type', function (Blueprint $table) {
             $table->id();
             $table->string('membership_type',20)->unique();
-            $table->DECIMAL('price',3,2);
+            $table->decimal('price', 8, 2);
             $table->string('description',255);
             $table->integer('duration_days');
             $table->boolean('status');

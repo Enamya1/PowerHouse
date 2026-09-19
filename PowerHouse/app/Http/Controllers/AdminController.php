@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Membership;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -194,6 +195,30 @@ class AdminController extends Controller
             'message'=>'role has been deleted 👌'
         ],200);
     }
+    public function update_role_info(Request $request,$id){
+        $validation = $request->validate([
+            'role_name'=>'required|string|max:255',
+        ]);
+        $role = Role::find($id);
+        if (!$role){
+            return response()->json([
+                'message'=>'role not found 🙈'
+            ],404);
+        };
+        $role->update($validation);
+        return response()->json([
+            'message'=>'succeed 👌',
+            'role'=>$role
+        ],200);
 
+    }
+
+    public function list_all_memberships(){
+        $memberships = Membership::all(['*']);
+        return response()->json([
+            $memberships
+        ],200);
+    }
+    
 
 }
