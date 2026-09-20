@@ -64,7 +64,17 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::delete('/delete/role/{id}', [AdminController::class, 'delete_role_by_id']);
         Route::put('/update/role/{id}', [AdminController::class, 'update_role_info']);
         // list all memberships
-        Route::get('/memberships', [AdminController::class, 'list_all_memberships']);
+        Route::get('/memberships', [AdminController::class, 'list_all_user_memberships']);
+        // get membership by id
+        Route::get('/memberships/{id}', [AdminController::class, 'get_membership_by_id']);
+        // create new user membership
+        Route::post('/memberships', [AdminController::class, 'create_user_membership']);
+        // update user membership
+        Route::put('/memberships/{id}', [AdminController::class, 'update_user_membership']);
+        // delete user membership
+        Route::delete('/memberships/{id}', [AdminController::class, 'delete_user_membership']);
+        // toggle membership status (active/suspended)
+        Route::patch('/memberships/{id}/toggle_status', [AdminController::class, 'toggle_membership_status']);
         // add membership type
         Route::post('/add_membership_type',[AdminController::class,'add_membership_type']);
         // remove membership type

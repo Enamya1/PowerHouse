@@ -214,11 +214,111 @@ class AdminController extends Controller
 
     }
 
-    public function list_all_memberships(){
-        $memberships = Membership::all(['*']);
+    public function list_all_user_memberships(){
+        $memberships = Membership::with(['user:id,name,email', 'membershipType:id,membership_type,price'])->get();
         return response()->json([
-            $memberships
-        ],200);
+            'memberships' => $memberships
+        ], 200);
+    }
+
+    public function get_membership_by_id($id){
+        if (!is_numeric($id) || $id < 1) {
+            return response()->json([
+                'message' => 'Invalid membership ID'
+            ], 422);
+        }
+        $membership = Membership::with(['user:id,name,email', 'membershipType:id,membership_type,price'])->find($id);
+        if (!$membership) {
+            return response()->json([
+                'message' => 'Membership not found 🙈'
+            ], 404);
+        }
+        return response()->json([
+            'membership' => $membership
+        ], 200);
+    }
+
+    public function create_user_membership(Request $request){
+        $validation = $request->validate([
+            'user_id'            => 'required|integer|min:1|exists:users,id',
+            'membership_type_id' => 'required|integer|min:1|exists:membership_type,id',
+            'start_date'         => 'nullable|date',
+            'end_date'           => 'nullable|date|after_or_equal:start_date',
+            'status'             => 'required|in:active,expired,cancelled,suspended',
+            'payment_status'     => 'required|in:paid,pending,failed,refunded',
+        ]);
+        $membership = Membership::create($validation);
+        $membership->load(['user:id,name,email', 'membershipType:id,membership_type,price']);
+        return response()->json([
+            'message'    => 'succeed 👌',
+            'membership' => $membership
+        ], 201);
+    }
+
+    public function update_user_membership(Request $request, $id){
+        if (!is_numeric($id) || $id < 1) {
+            return response()->json([
+                'message' => 'Invalid membership ID'
+            ], 422);
+        }
+        $validation = $request->validate([
+            'user_id'            => 'required|integer|min:1|exists:users,id',
+            'membership_type_id' => 'required|integer|min:1|exists:membership_type,id',
+            'start_date'         => 'nullable|date',
+            'end_date'           => 'nullable|date|after_or_equal:start_date',
+            'status'             => 'required|in:active,expired,cancelled,suspended',
+            'payment_status'     => 'required|in:paid,pending,failed,refunded',
+        ]);
+        $membership = Membership::find($id);
+        if (!$membership) {
+            return response()->json([
+                'message' => 'Membership not found 🙈'
+            ], 404);
+        }
+        $membership->update($validation);
+        $membership->load(['user:id,name,email', 'membershipType:id,membership_type,price']);
+        return response()->json([
+            'message'    => 'succeed 👌',
+            'membership' => $membership
+        ], 200);
+    }
+
+    public function delete_user_membership($id){
+        if (!is_numeric($id) || $id < 1) {
+            return response()->json([
+                'message' => 'Invalid membership ID'
+            ], 422);
+        }
+        $membership = Membership::find($id);
+        if (!$membership) {
+            return response()->json([
+                'message' => 'Membership not found 🙈'
+            ], 404);
+        }
+        $membership->delete();
+        return response()->json([
+            'message' => 'Membership has been deleted 👌'
+        ], 200);
+    }
+
+    public function toggle_membership_status($id){
+        if (!is_numeric($id) || $id < 1) {
+            return response()->json([
+                'message' => 'Invalid membership ID'
+            ], 422);
+        }
+        $membership = Membership::find($id);
+        if (!$membership) {
+            return response()->json([
+                'message' => 'Membership not found 🙈'
+            ], 404);
+        }
+        $membership->status = ($membership->status === 'suspended') ? 'active' : 'suspended';
+        $membership->save();
+        return response()->json([
+            'message'    => 'Membership status updated 👌',
+            'membership' => $membership
+        ], 200);
     }
 
     public function add_membership_type(Request $request){
@@ -285,10 +385,10 @@ class AdminController extends Controller
     }
 
 
-
-
-
-
     
+
+
+
+
 
 }
