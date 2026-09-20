@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Membership;
+use App\Models\MembershipType;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -219,6 +220,75 @@ class AdminController extends Controller
             $memberships
         ],200);
     }
+
+    public function add_membership_type(Request $request){
+        $validation = $request->validate([
+            'membership_type' => 'required|string|max:20|unique:membership_type,membership_type',
+            'price'           => 'required|numeric|min:0|between:0,999999.99',
+            'description'     => 'required|string|max:255',
+            'duration_days'   => 'required|integer|min:1',
+            'status'          => 'required|boolean',
+        ]);
+        $membership_type = MembershipType::create($validation);
+        return response()->json([
+            'message'         => 'succeed 👌',
+            'membership_type' => $membership_type
+        ], 201);
+    }
+    public function remove_membership_type($id){
+        $membership_type = MembershipType::find($id);
+        if (!$membership_type){
+            return response()->json([
+                'message'=>'membership_type not found 🙈'
+            ],404);
+        };
+        $membership_type->delete();
+        return response()->json([
+            'message'=>'membership_type has been deleted 👌'
+        ],200);
+    }
+    public function update_membership_type(Request $request,$id){
+        if (!is_numeric($id) || $id < 1) {
+            return response()->json([
+                'message' => 'Invalid membership type ID'
+            ], 422);
+        }
+        $validation = $request->validate([
+            'membership_type' => 'required|string|max:20|unique:membership_type,membership_type,' . $id,
+            'price'           => 'required|numeric|min:0|between:0,999999.99',
+            'description'     => 'required|string|max:255',
+            'duration_days'   => 'required|integer|min:1',
+            'status'          => 'required|boolean',
+        ]);
+        $membership_type = MembershipType::find($id);
+        if (!$membership_type){
+            return response()->json([
+                'message'=>'membership_type not found 🙈'
+            ],404);
+        };
+        $membership_type->update($validation);
+        return response()->json([
+            'message'         => 'succeed 👌',
+            'membership_type' => $membership_type
+        ],200);
+    }
+    public function get_membership_type_info_by_id($id){
+        $membership_type = MembershipType::find($id);
+        if (!$membership_type){
+            return response()->json([
+                'message'=>'membership_type not found 🙈'
+            ],404);
+        };
+        return response()->json([
+            $membership_type
+        ],200);
+    }
+
+
+
+
+
+
     
 
 }

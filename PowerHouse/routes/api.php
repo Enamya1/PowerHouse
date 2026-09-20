@@ -39,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::DELETE('/delete/{confirmation}',[AuthController::class,'delete_acount']);
     // sing up for membership
     Route::post('/sing_up_for_membership',[AuthController::class,'sing_up_for_membership']);
+    
 
 });
 
@@ -64,7 +65,13 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::put('/update/role/{id}', [AdminController::class, 'update_role_info']);
         // list all memberships
         Route::get('/memberships', [AdminController::class, 'list_all_memberships']);
-        // sing up for membership
-        
+        // add membership type
+        Route::post('/add_membership_type',[AdminController::class,'add_membership_type']);
+        // remove membership type
+        Route::delete('/remove_membership_type/{id}',[AdminController::class,'remove_membership_type']);
+        // update membership type
+        Route::put('/update_membership_type/{id}',[AdminController::class,'update_membership_type']);
+        // get membership type info by id
+        Route::get('/membership_type/{id}',[AdminController::class,'get_membership_type_info_by_id']);
 
     });
