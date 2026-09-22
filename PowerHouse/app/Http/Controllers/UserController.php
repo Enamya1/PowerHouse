@@ -135,4 +135,24 @@ class UserController extends Controller
         'qr_code' => $qr_key
     ], 200);
 }
+    public function update_request(Request $request) { 
+        $user = $request->user();
+        $payment_request= PaymentRequest::where('user_id',$user->id)->first();
+        if (!$payment_request) {
+            return response()->json([
+                'message' => 'Payment request not found ❌'
+            ], 404);
+        }
+        $validation = $request->validate([
+            'membership_type_id' => 'required|integer|exists:membership_types,id',
+        ]);
+        $payment_request->update([
+            'membership_type_id' => $validation['membership_type_id'],
+        ]);
+       
+        return response()->json([
+            'message' => 'Payment request updated successfully 👌',
+            'request'=>$payment_request
+        ], 200);
+    }
 }
