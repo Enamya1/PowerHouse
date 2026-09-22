@@ -9,7 +9,9 @@ use App\Models\MembershipType;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Str;
+use App\Models\PaymentRequest;
+use PhpParser\Node\Expr\FuncCall;
 
 class AuthController extends Controller
 {
@@ -75,12 +77,6 @@ class AuthController extends Controller
             'message'=>'Logged out successfully ✅'
         ],200);
     }
-    public function get_profile_info(Request $request){
-        $user = $request->user();
-        return response()->json([
-            'user'=>$user
-        ],200);
-    }
     public function change_password(Request $request){
         $user = $request->user();
         $validation = $request->validate([
@@ -98,55 +94,16 @@ class AuthController extends Controller
             'message'=>'password updated successfully'
         ],200);
     }
-    public function delete_acount($confirmation){
-        if ($confirmation!=='delete'){
-            return response()->json([
-                'message'=>'wrong input ❌'
-            ],400);
-        };
-        $user=request()->user();
-        $user->delete();
-        return response()->json([
-            'message'=>'acount has been deleted 👍'
-        ],200);
+   
 
-    }
-    public function sing_up_for_membership(Request $request){
-        $user = $request->user();
-        $validation = $request->validate([
-            'membership_type_id'=>'required|integer|exists:membership_type,id',
-        ]);
-        $membership_type = MembershipType::find($validation['membership_type_id']);
-        $existingMembership = $user->memberships()->where('membership_type_id', $validation['membership_type_id'])->first();
-        if ($existingMembership) {
-            return response()->json([
-                'message'=>'you already have a membership of this type ❌'
-            ],400);
-        }
-        if (!$membership_type){
-            return response()->json([
-                'message'=>'membership type not found ❌'
-            ],404);
-        }
-        $startDate = now();
-        $endDate = now()->addDays($membership_type->duration_days);
-        $paymentStatus = $membership_type->price == 0 ? 'paid' : 'pending';
-        $membership = $user->memberships()->create([
-            'membership_type_id' => $validation['membership_type_id'],
-            'start_date'         => $startDate,
-            'end_date'           => $endDate,
-            'status'             => 'active',
-            'payment_status'     => $paymentStatus,
-        ]);
-        return response()->json([
-                'message'=>'succeed 👌',
-                'user'=>$user,
-                'membership'=>$membership
-            ],200);
-    }
+    
 
 
 
+
+
+
+  
 
 
 

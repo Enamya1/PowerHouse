@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->cascadeOnDelete()->constrained('users');
             $table->foreignId('membership_type_id')->constrained('membership_type')->cascadeOnDelete();
-            $table->time('start_date');
-            $table->time('end_date');
-            $table->enum('status',['active','expired','cancelled','suspended']);
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
+            $table->enum('status',['active','expired','cancelled','suspended','pending']);
             $table->enum('payment_status',['paid', 'pending', 'failed', 'refunded']);
             $table->timestamps();
         });

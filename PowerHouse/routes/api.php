@@ -34,12 +34,15 @@ Route::post('/login',[AuthController::class,'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'log_out']);
-    Route::get('/profile',[AuthController::class,'get_profile_info']);
+    Route::get('/profile',[UserController::class,'get_profile_info']);
     Route::put('/change_password',[AuthController::class,'change_password']);
-    Route::DELETE('/delete/{confirmation}',[AuthController::class,'delete_acount']);
-    // sing up for membership
-    Route::post('/sing_up_for_membership',[AuthController::class,'sing_up_for_membership']);
-    
+    Route::DELETE('/delete/{confirmation}',[UserController::class,'delete_acount']);
+    // sing up for membership and make a payment request
+    Route::post('/sing_up_for_membership/{membership_type_id}',[UserController::class,'sing_up_for_membership']);
+    //get qr code for each user 
+    Route::get('/payment_qr_code',[UserController::class,'get_payment_qr_code']);
+    //get payment reqest_info 
+    Route::get('/payment_requests',[UserController::class,'get_payment_requests']);
 
 });
 
