@@ -43,7 +43,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/payment_qr_code',[UserController::class,'get_payment_qr_code']);
     //get payment reqest_info 
     Route::get('/payment_requests',[UserController::class,'get_payment_requests']);
-
+    //update payment request
+    Route::put('/update_payment_request',[UserController::class,'update_payment_request']);
+    // delete user payment request 
+    Route::delete('/delete_payment_request',[UserController::class,'delete_payment_request']);
 });
 
 

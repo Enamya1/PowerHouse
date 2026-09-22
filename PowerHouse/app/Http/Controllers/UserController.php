@@ -135,7 +135,7 @@ class UserController extends Controller
         'qr_code' => $qr_key
     ], 200);
 }
-    public function update_request(Request $request) { 
+    public function update_payment_request(Request $request) { 
         $user = $request->user();
         $payment_request= PaymentRequest::where('user_id',$user->id)->first();
         if (!$payment_request) {
@@ -143,11 +143,9 @@ class UserController extends Controller
                 'message' => 'Payment request not found ❌'
             ], 404);
         }
-        $validation = $request->validate([
-            'membership_type_id' => 'required|integer|exists:membership_types,id',
-        ]);
+        
         $payment_request->update([
-            'membership_type_id' => $validation['membership_type_id'],
+            'membership_type_id' => $request->input('membership_type_id'),
         ]);
        
         return response()->json([
@@ -155,4 +153,56 @@ class UserController extends Controller
             'request'=>$payment_request
         ], 200);
     }
+
+    public function delete_payment_request(Request $request)
+{
+    $user = $request->user();
+
+    // Validate request
+    $request->validate([
+        'membership_id' => 'required|integer',
+        'confirmation' => 'required|string|in:delete',
+    ]);
+
+    // Find the membership belonging to this user
+    $membership = Membership::where('id', $request->membership_id)
+        ->where('user_id', $user->id)
+        ->first();
+
+    if (!$membership) {
+        return response()->json([
+            'message' => 'Membership not found ❌'
+        ], 404);
+    }
+
+    // Do not allow deleting an active membership
+    if ($membership->status === 'active') {
+        return response()->json([
+            'message' => 'You have active membership ❌'
+        ], 400);
+    }
+
+    // Find payment request for this membership
+    $payment_request = PaymentRequest::where('user_id', $user->id)
+        ->where('membership_type_id', $membership->membership_type_id)
+        ->first();
+
+    if (!$payment_request) {
+        return response()->json([
+            'message' => 'Payment request not found ❌'
+        ], 404);
+    }
+
+    // Delete payment request
+    $payment_request->delete();
+
+    // Delete membership
+    $membership->delete();
+
+    return response()->json([
+        'message' => 'Payment request and membership deleted successfully 👌'
+    ], 200);
+}
+
+
 }
