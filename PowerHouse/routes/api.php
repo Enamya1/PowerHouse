@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ModeratorController;
 
 // test 
 Route::get('/test', function () {
@@ -102,5 +103,17 @@ Route::middleware(['auth:sanctum', 'admin'])
         Route::put('/update_membership_type/{id}',[AdminController::class,'update_membership_type']);
         // get membership type info by id
         Route::get('/membership_type/{id}',[AdminController::class,'get_membership_type_info_by_id']);
+
+    });
+
+
+
+
+
+    Route::middleware(['auth:sanctum', 'moderator'])
+    ->prefix('moderator')
+    ->group(function () {
+        // get all users
+        Route::get('/users', [ModeratorController::class, 'get_all_users']);
 
     });
