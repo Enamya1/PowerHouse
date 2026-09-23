@@ -22,6 +22,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->rememberToken();
             $table->timestamps();
+            $table->string('attendance_qr_key', 64)->nullable(); 
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

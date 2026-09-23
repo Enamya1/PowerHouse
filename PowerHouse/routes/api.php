@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Attendance_controller;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -47,6 +48,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/update_payment_request',[UserController::class,'update_payment_request']);
     // delete user payment request 
     Route::delete('/delete_payment_request',[UserController::class,'delete_payment_request']);
+
+
+
+
+     // check in or out
+    Route::post('/check_in_out',[Attendance_controller::class,'check_in_out']);
+    // get attendance record
+    Route::get('/attendance_record/my_record',[Attendance_controller::class,'get_attendance_record']);
+    // get current attendance
+    Route::get('/attendance_record/current',[Attendance_controller::class,'get_current_attendance']);
+    // get attendance qr key
+    Route::get('/attendance_qr_key/my_qr_key',[Attendance_controller::class,'get_attendace_qr_key']);
 });
 
 

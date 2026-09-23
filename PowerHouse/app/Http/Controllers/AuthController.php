@@ -29,7 +29,9 @@ class AuthController extends Controller
             'email'=>$validate['email'],
             'ID_nO'=>Hash::make($validate['ID_nO']),
             'password'=> Hash::make($validate['password']),
+            'attendance_qr_key'=>Str::random(64),
         ]);
+
         // return the respond 
         return response()->json([
             'message'=>'👍',
